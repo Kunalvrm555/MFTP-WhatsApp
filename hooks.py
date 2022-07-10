@@ -21,7 +21,6 @@ def notices_updated(notices):
 
         r = requests.post(env['SEND_MESSAGE_URL'],data={
             "message":notice['text'],
-            "number":9354817605
         },verify=False)
         if 'attachment_url' in notice:
             r = requests.post(env['SEND_FILE_URL'],files={"attachment":notice['attachment_raw']})
