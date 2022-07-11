@@ -7,6 +7,10 @@ from tornado import gen
 import requests
 import datetime
 import traceback
+from datetime import datetime as dt
+now = dt.now()
+
+current_time = now.strftime("%H:%M:%S")
 
 requests.packages.urllib3.disable_warnings()
 
@@ -27,7 +31,7 @@ def run_updates():
         with ThreadPoolExecutor(max_workers=1) as executor:
             yield gen.with_timeout(datetime.timedelta(UPDATE_PERIOD/1000.0),
                                    executor.submit(func))
-        print ('run_updates done')
+        print ('run_updates done, last --> t= ' + current_time)
     except gen.TimeoutError:
         print ('run_updates timed out')
 
