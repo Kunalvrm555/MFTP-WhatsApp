@@ -46,7 +46,7 @@ def check_notices(session, sessionData):
                       'Chrome/46.0.2490.86 Safari/537.36',
         'Referer':
         'https://erp.iitkgp.ac.in/SSOAdministration/login.htm?sessionToken=595794DC220159D1CBD10DB69832EF7E.worker3',
-        'cookie':'JSESSIONID=198C7AA25A2206AA75C4CA212ECD4DCB.worker3; ssoToken=%s; JSID#/IIT_ERP3=2C7F12F1FB8E280086A5C1AFE79EAC67.worker2; JSID#/Academic=F1F80C4EEEB75B9D7B40D97FA46A9515.worker2; JSID#/ERPAccounts=502825F974872A8A03B0B4AAFA7A14DD.worker1; JSID#/TrainingPlacementSSO=198C7AA25A2206AA75C4CA212ECD4DCB.worker3'% ssoToken
+        'Cookie':env['COOKIE'],
     },
     'verify': False
 }
@@ -86,16 +86,10 @@ def check_notices(session, sessionData):
         if a.attrs['title'] == 'Download':
             notice['attachment_url'] = ERP_ATTACHMENT_URL.format(year, id_)
             r = session.get(notice['attachment_url'], stream=True,**attachment_args)
-            #print(r.headers)
-            r.raw.decode_content = True
-            hash_ = hashlib.md5()
-            notice['attachment_raw'] = b""
+            notice['attachment_raw'] = b''
             for chunk in r.iter_content(4096):
                 notice['attachment_raw'] += chunk
-                hash_.update(chunk)
-            #print(notice['attachment_raw'])    
-            notice['attachment_md5'] = hash_.hexdigest()
-            notice['uid'] += "_"+notice['attachment_md5']
+            print("attachment_raw: %s" % len(notice['attachment_raw']))
 
         notices.append(notice)
 
