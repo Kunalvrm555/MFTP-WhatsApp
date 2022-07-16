@@ -8,7 +8,7 @@ from copy import copy as shallow_copy
 
 import settings
 from pathlib import Path
-from erp import tnp_login, req_args
+from erp import ERP_CDC_MODULE_URL, ERP_TPSTUDENT_URL, tnp_login, req_args
 import hooks
 import html2text
 # Checking all the notices is ideal, but too slow to do quickly, since
@@ -46,7 +46,6 @@ def check_notices(session, sessionData):
                       'Chrome/46.0.2490.86 Safari/537.36',
         'Referer':
         'https://erp.iitkgp.ac.in/SSOAdministration/login.htm?sessionToken=595794DC220159D1CBD10DB69832EF7E.worker3',
-        'Cookie':env['COOKIE'],
     },
     'verify': False
 }
@@ -85,7 +84,9 @@ def check_notices(session, sessionData):
         a = bs(cds[7].string, 'html.parser').find_all('a')[0]
         if a.attrs['title'] == 'Download':
             notice['attachment_url'] = ERP_ATTACHMENT_URL.format(year, id_)
-            r = session.get(notice['attachment_url'], stream=True,**attachment_args)
+            r = session.get(ERP_CDC_MODULE_URL, **req_args)
+            r = session.get(ERP_TPSTUDENT_URL, **req_args)
+            r = session.get(notice['attachment_url'], stream=True)
             notice['attachment_raw'] = b''
             for chunk in r.iter_content(4096):
                 notice['attachment_raw'] += chunk
